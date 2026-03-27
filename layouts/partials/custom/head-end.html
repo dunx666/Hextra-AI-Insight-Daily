@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
             #floating-widget-container {
                 position: fixed;
                 bottom: 32px;
-                right: 48px;
+                right: 248px;
                 z-index: 9999;
                 display: flex;
                 flex-direction: column;
@@ -344,6 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 box-shadow: 0 4px 20px rgba(0,0,0,0.12);
                 border: none;
                 transition: all 0.2s ease;
+                position: relative; /* 确保波纹准确定位 */
             }
             #floating-widget-toggle:hover {
                 transform: scale(1.05);
@@ -366,16 +367,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 height: 28px;
                 fill: currentColor;
                 transition: transform 0.3s ease;
+                z-index: 2; /* 确保图标在波纹上方 */
             }
             #floating-widget-toggle.active svg {
                 transform: rotate(180deg);
             }
             #floating-widget-toggle:not(.active) {
-                animation: bounce-hint 4s infinite ease-in-out;
+                animation: bounce-hint 3s infinite ease-in-out;
+            }
+            /* 扩散波纹效果 */
+            #floating-widget-toggle:not(.active)::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: 50%;
+                background: #007bff; /* 浅色模式主题色 */
+                z-index: -1;
+                animation: ripple 3s infinite ease-out;
+                opacity: 0.6;
+            }
+            .dark #floating-widget-toggle:not(.active)::before {
+                background: #ff9900; /* 深色模式主题色 */
             }
             @keyframes bounce-hint {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(-8px); }
+                0%, 100% { transform: translateY(0) scale(1); }
+                50% { transform: translateY(-12px) scale(1.05); }
+            }
+            @keyframes ripple {
+                0% {
+                    transform: scale(1);
+                    opacity: 0.6;
+                }
+                60%, 100% {
+                    transform: scale(1.8);
+                    opacity: 0;
+                }
             }
             @media (max-width: 767px) {
                 #floating-widget-container {
